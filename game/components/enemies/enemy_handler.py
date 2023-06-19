@@ -1,44 +1,39 @@
-from game.components.enemies import Drone, Ship, Enemyfactory
-import random
+from game.components.enemies import Enemyfactory
+from game.components.enemies import Follower
+import pygame
 
 class EnemyHandler:
 
-    MAX_ENEMIES = 10
+    MAX_ENEMIES = 5
     ENEMY_FACTORY = Enemyfactory()
 
-    def __init__(self):
-        self.enemies = []
+    def __init__(self, player):
+        self.enemies = pygame.sprite.Group()
+        self.player = player
 
     def update(self):
-        self.add_enemy()
         for enemy in self.enemies:
-            enemy.update()
-            if not enemy.is_alive:
+            if type(enemy) == Follower:
+                enemy.update(self.player.rect.x, self.player.rect.y)
+            else:
+                enemy.update()
+
+            if not enemy.alive():
                 self.remove_enemy(enemy)
-            
 
     def draw(self, screen):
-        for enemy in self.enemies:
-            enemy.draw(screen)
+        self.enemies.draw(surface = screen)
+        
+        for enemy in self.get_player_collisions():
+            pygame.draw.rect(screen, (255, 14, 14), enemy.rect, 1)
 
     def add_enemy(self):
         if len(self.enemies) < self.MAX_ENEMIES:
-            index = 0
-            in_same_pos = True
             new_enemy = self.ENEMY_FACTORY.get_rand_enemy()
-            len_enemies = len(self.enemies)
-
-            while in_same_pos and index < len_enemies:
-                in_same_pos = new_enemy.rect.x == self.enemies[index].rect.x
-
-                if in_same_pos:
-                    new_enemy.new_x_pos()
-                    index = -1
-
-                index += 1
-            
-
-            self.enemies.append(new_enemy)
+            self.enemies.add(new_enemy)
 
     def remove_enemy(self, enemy):
         self.enemies.remove(enemy)
+
+    def get_player_collisions(self):
+        return pygame.sprite.spritecollide(self.player, self.enemies, False)

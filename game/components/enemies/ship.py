@@ -1,11 +1,11 @@
 from game.components.enemies.enemy import Enemy
-from game.utils.constants import ENEMY_1, SCREEN_WIDTH, LEFT, RIGHT
+from game.utils.constants import ENEMY_1, SCREEN_HEIGHT, SCREEN_WIDTH, LEFT, RIGHT
 import pygame
 
 class Ship(Enemy):
 
-    WIDTH = 40
-    HEIGHT = 60
+    WIDTH = 35
+    HEIGHT = 40
     INTERVAL = 60
     SPEED_X = 6
 
@@ -14,6 +14,12 @@ class Ship(Enemy):
         self.image = pygame.transform.scale(self.image, (self.WIDTH, self.HEIGHT))
         super().__init__(self.image)
         self.index = 0
+
+    def update(self):
+        self.move()
+        
+        if self.rect.y > SCREEN_HEIGHT:
+            self.kill()
 
     def move(self):
         self.rect.y += self.SPEED_Y

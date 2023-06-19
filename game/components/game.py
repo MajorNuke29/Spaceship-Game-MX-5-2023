@@ -6,10 +6,15 @@ from game.components.enemies.enemy_handler import EnemyHandler
 
 
 class Game:
+
+    SPAWN_ENEMY = pygame.USEREVENT + 1
+
     def __init__(self):
         pygame.init()
+        pygame.time.set_timer(self.SPAWN_ENEMY, 700)
         pygame.display.set_caption(TITLE)
         pygame.display.set_icon(ICON)
+
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.playing = False
@@ -17,7 +22,7 @@ class Game:
         self.x_pos_bg = 0
         self.y_pos_bg = 0
         self.player = SpaceShip()
-        self.enemy_handler = EnemyHandler()
+        self.enemy_handler = EnemyHandler(self.player)
 
     def run(self):
         # Game loop: events - update - draw
@@ -33,6 +38,8 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.playing = False
+            elif event.type == self.SPAWN_ENEMY:
+                self.enemy_handler.add_enemy()
 
     def update(self):
         user_input = pygame.key.get_pressed()
@@ -54,6 +61,7 @@ class Game:
         self.screen.blit(image, (self.x_pos_bg, self.y_pos_bg))
         self.screen.blit(image, (self.x_pos_bg, self.y_pos_bg - image_height))
         if self.y_pos_bg >= SCREEN_HEIGHT:
-            self.screen.blit(image, (self.x_pos_bg, self.y_pos_bg - image_height))
+            self.screen.blit(
+                image, (self.x_pos_bg, self.y_pos_bg - image_height))
             self.y_pos_bg = 0
         self.y_pos_bg += self.game_speed

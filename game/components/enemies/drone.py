@@ -5,11 +5,11 @@ import random
 
 class Drone(Enemy):
 
-    WIDTH = 60
+    WIDTH = 40
     HEIGHT = 50
     SPEED_X = 7
-    SPEED_Y = 7
-    INTERVAL = 5
+    SPEED_Y = 5
+    INTERVAL = 6
 
     def __init__(self):
         self.image = ENEMY_2
@@ -25,8 +25,8 @@ class Drone(Enemy):
         else:
             self.move()
 
-        if self.rect.y >= SCREEN_HEIGHT or self.rect.bottom <= 0 or self.rect.x >= SCREEN_WIDTH or self.rect.right <= 0:
-            self.is_alive = False
+        if self.rect.y  > SCREEN_HEIGHT:
+            self.kill()
 
     def move(self):
         if self.mov_x == LEFT:
@@ -34,12 +34,14 @@ class Drone(Enemy):
 
             if self.rect.left <= 0:
                 self.mov_x = RIGHT
+                self.mov_y = random.choice(self.MOVES_Y)
                 self.bounces += 1
         else:
             self.rect.x += self.SPEED_X
 
             if self.rect.right >= SCREEN_WIDTH:
                 self.mov_x = LEFT
+                self.mov_y = random.choice(self.MOVES_Y)
                 self.bounces += 1
 
         if self.mov_y == UP:
@@ -47,21 +49,25 @@ class Drone(Enemy):
 
             if self.rect.top <= 0:
                 self.mov_y = DOWN
+                self.mov_x = random.choice(self.MOVES_X)
                 self.bounces += 1
         else:
             self.rect.y += self.SPEED_Y
 
             if self.rect.bottom >= SCREEN_HEIGHT:
                 self.mov_y = UP
+                self.mov_x = random.choice(self.MOVES_X)
                 self.bounces += 1
 
     def outbounds_move(self):
-        if self.mov_x == LEFT:
-            self.rect.x -= self.SPEED_X
-        else:
-            self.rect.x += self.SPEED_X
+        self.rect.y += (self.SPEED_Y + 4)
+        
+        # if self.mov_x == LEFT:
+        #     self.rect.x += self.SPEED_X
+        # else:
+        #     self.rect.x -= self.SPEED_X
 
-        if self.mov_y == UP:
-            self.rect.y -= self.SPEED_Y
-        else:
-            self.rect.y += self.SPEED_Y
+        # if self.mov_y == UP:
+        #     self.rect.y += self.SPEED_Y
+        # else:
+        #     self.rect.y -= self.SPEED_Y
