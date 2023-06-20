@@ -16,7 +16,7 @@ class Ship(Enemy):
         self.index = 0
 
     def update(self):
-        self.move()
+        super().update()
         
         if self.rect.y > SCREEN_HEIGHT:
             self.kill()

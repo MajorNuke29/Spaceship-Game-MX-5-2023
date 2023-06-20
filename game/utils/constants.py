@@ -41,3 +41,13 @@ DOWN = 'down'
 SHIP = 'ship'
 DRONE = 'drone'
 FOLLOWER = 'follower'
+
+
+# Bullet constants
+BULLET_ENEMY_TYPE = 'enemy'
+BULLET_PLAYER_TYPE = 'player'
+
+# Custom events
+SPAWN_ENEMY = pygame.USEREVENT + 1
+ENEMY_SHOOT = pygame.USEREVENT + 2
+BLINK = pygame.USEREVENT + 3

@@ -1,17 +1,18 @@
 import pygame
+import random
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, BLINK
 from game.components.spaceship import SpaceShip
 from game.components.enemies.enemy_handler import EnemyHandler
+from game.components.bullets.bullet_handler import BulletHandler
 
 
 class Game:
 
-    SPAWN_ENEMY = pygame.USEREVENT + 1
-
     def __init__(self):
         pygame.init()
-        pygame.time.set_timer(self.SPAWN_ENEMY, 700)
+        pygame.time.set_timer(SPAWN_ENEMY, 700)
+        pygame.time.set_timer(ENEMY_SHOOT, 1500)
         pygame.display.set_caption(TITLE)
         pygame.display.set_icon(ICON)
 
@@ -22,7 +23,8 @@ class Game:
         self.x_pos_bg = 0
         self.y_pos_bg = 0
         self.player = SpaceShip()
-        self.enemy_handler = EnemyHandler(self.player)
+        self.enemy_handler = EnemyHandler()
+        self.bullet_handler = BulletHandler()
 
     def run(self):
         # Game loop: events - update - draw
@@ -38,20 +40,24 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.playing = False
-            elif event.type == self.SPAWN_ENEMY:
+            elif event.type == SPAWN_ENEMY:
                 self.enemy_handler.add_enemy()
+            elif event.type == ENEMY_SHOOT:
+                self.enemy_handler.shoot(self.bullet_handler)
 
     def update(self):
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
-        self.enemy_handler.update()
+        self.enemy_handler.update(self.player)
+        self.bullet_handler.update(self.player)
 
     def draw(self):
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
         self.draw_background()
         self.player.draw(self.screen)
-        self.enemy_handler.draw(self.screen)
+        self.enemy_handler.draw(self.screen, self.player)
+        self.bullet_handler.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
 
