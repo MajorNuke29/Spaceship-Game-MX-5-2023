@@ -20,8 +20,7 @@ class Follower(Enemy):
         self.dir_vector = None
 
     def update(self, player_x, player_y):
-        if not self.on_screen:
-            self.update_on_screen()
+        super().update()
 
         if self.moves < self.INTERVAL:
             self.move(player_x, player_y)
@@ -29,8 +28,8 @@ class Follower(Enemy):
         else:
             self.move_out_bounds()
 
-        if self.is_out_of_bounds() and self.on_screen:
-            self.kill()
+        if self.is_out_of_screen() and self.on_screen:
+            self.is_out_of_bounds = True
 
     def move(self, player_x, player_y):
         
@@ -57,6 +56,3 @@ class Follower(Enemy):
             self.dir_vector = dir_vector
 
         self.rect.move_ip(self.dir_vector)
-    
-    def is_out_of_bounds(self):
-        return self.rect.bottom < 0 or self.rect.y > SCREEN_HEIGHT or self.rect.right < 0 or self.rect.x > SCREEN_WIDTH

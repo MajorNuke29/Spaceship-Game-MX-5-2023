@@ -16,9 +16,6 @@ class BulletHandler:
             elif type(bullet) == BulletPlayer:
                 self.check_enemies_collition(bullet, enemies)
 
-            if not bullet.alive():
-                self.remove_bullet(bullet)
-
     def draw(self, screen):
         for bullet in self.bullets:
             bullet.draw(screen)
@@ -29,14 +26,17 @@ class BulletHandler:
             player.reduce_lifes()
 
     def check_enemies_collition(self, bullet, enemies):
-        enemies_collided = pygame.sprite.spritecollide(bullet, enemies, True)
+        enemies_collided = pygame.sprite.spritecollide(bullet, enemies, False)
 
         if len(enemies_collided) > 0:
-            self.remove_bullet(bullet)
+            bullet.kill()
+            for enemy in enemies_collided:
+                enemy.destroy()
+
 
     def add_bullet(self, bullet_type, origin):
             bullet = self.bullet_factory.get_bullet(bullet_type, origin)
             self.bullets.add(bullet)
 
-    def remove_bullet(self, bullet):
-        self.bullets.remove(bullet)
+    def reset(self):
+        self.bullets.empty()

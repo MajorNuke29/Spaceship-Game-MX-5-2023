@@ -1,10 +1,12 @@
 import pygame
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, MEDIUM_LEVEL_MAX_ENEMIES, MEDIUM_ENEMY_SPAWN_PROBABILITIES
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, WHITE_COLOR, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES
+
+from game.utils import text_utils
 from game.components.spaceship import SpaceShip
 from game.components.enemies.enemy_handler import EnemyHandler
 from game.components.bullets.bullet_handler import BulletHandler
-from game.components.enemies.factories import LevelBasedEnemyFactory, RandomEnemyFactory
+from game.components.enemies.factories import LevelBasedEnemyFactory
 from game.components.bullets import BulletFactory
 
 
@@ -20,27 +22,36 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.playing = False
+        self.runnig = False
         self.game_speed = 10
         self.x_pos_bg = 0
         self.y_pos_bg = 0
+
         self.player = SpaceShip()
-        self.enemy_handler = EnemyHandler(RandomEnemyFactory())
+        self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES))
         self.bullet_handler = BulletHandler(BulletFactory())
+        self.deaths_count = 0
+        self.destroyed_enemies = 0
 
     def run(self):
         # Game loop: events - update - draw
-        self.playing = True
-        while self.playing:
+        self.runnig = True
+
+        while self.runnig:
             self.events()
             self.update()
             self.draw()
+
         pygame.display.quit()
         pygame.quit()
 
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.runnig = False
                 self.playing = False
+            elif event.type == pygame.KEYDOWN and not self.playing:
+                self.playing = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.player.shoot(self.bullet_handler)
             elif event.type == SPAWN_ENEMY:
@@ -49,21 +60,28 @@ class Game:
                 self.enemy_handler.shoot(self.bullet_handler)
 
     def update(self):
-        if not self.player.is_alive:
-            self.playing = False
+        if self.playing:
+            if not self.player.is_alive:
+                self.playing = False
+                self.deaths_count += 1
+                self.destroyed_enemies = self.enemy_handler.get_destroyed_enemies_count()
+                self.reset()
 
-        user_input = pygame.key.get_pressed()
-        self.player.update(user_input)
-        self.enemy_handler.update(self.player)
-        self.bullet_handler.update(self.player, self.enemy_handler.get_enemies())
+            user_input = pygame.key.get_pressed()
+            self.player.update(user_input)
+            self.enemy_handler.update(self.player)
+            self.bullet_handler.update(self.player, self.enemy_handler.get_enemies())
 
     def draw(self):
-        self.clock.tick(FPS)
-        self.screen.fill((255, 255, 255))
-        self.draw_background()
-        self.player.draw(self.screen)
-        self.enemy_handler.draw(self.screen)
-        self.bullet_handler.draw(self.screen)
+        if self.playing:
+            self.clock.tick(FPS)
+            self.draw_background()
+            self.player.draw(self.screen)
+            self.enemy_handler.draw(self.screen)
+            self.bullet_handler.draw(self.screen)
+        else:
+            self.draw_menu()
+
         pygame.display.update()
         pygame.display.flip()
 
@@ -77,3 +95,16 @@ class Game:
                 image, (self.x_pos_bg, self.y_pos_bg - image_height))
             self.y_pos_bg = 0
         self.y_pos_bg += self.game_speed
+
+    def draw_menu(self):
+        if self.deaths_count == 0:
+            text, text_rect = text_utils.get_message("Menu", 20, WHITE_COLOR)
+        else:
+            text, text_rect = text_utils.get_message("Enemies destroyed: " + str(self.destroyed_enemies), 20, WHITE_COLOR)
+        
+        self.screen.blit(text, text_rect)
+
+    def reset(self):
+        self.player.reset()
+        self.enemy_handler.reset()
+        self.bullet_handler.reset()

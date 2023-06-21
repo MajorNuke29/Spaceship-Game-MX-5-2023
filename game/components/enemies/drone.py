@@ -26,7 +26,7 @@ class Drone(Enemy):
             self.move()
 
         if self.rect.y  > SCREEN_HEIGHT:
-            self.kill()
+            self.is_out_of_bounds = True
 
     def move(self):
         if self.mov_x == LEFT:
@@ -61,13 +61,3 @@ class Drone(Enemy):
 
     def outbounds_move(self):
         self.rect.y += (self.SPEED_Y + 4)
-        
-        # if self.mov_x == LEFT:
-        #     self.rect.x += self.SPEED_X
-        # else:
-        #     self.rect.x -= self.SPEED_X
-
-        # if self.mov_y == UP:
-        #     self.rect.y += self.SPEED_Y
-        # else:
-        #     self.rect.y -= self.SPEED_Y

@@ -21,7 +21,6 @@ class SpaceShip:
         self.rect.y = self.Y_POS
         self.is_alive = True
         self.lifes = 3
-        
         self.is_blinking = False
         self.is_visible = True
         self.cycles = self.BLINK_DURATION_CYCLES
@@ -104,4 +103,13 @@ class SpaceShip:
     def move_down(self):
         if self.rect.bottom < SCREEN_HEIGHT:
             self.rect.y += self.SPEED
-            
+
+    def reset(self):
+        self.is_alive = True
+        self.lifes = 3
+        self.is_blinking = False
+        self.is_visible = True
+        self.cycles = self.BLINK_DURATION_CYCLES
+        self.alpha_value = 255
+        self.rect.x = self.X_POS
+        self.rect.y = self.Y_POS

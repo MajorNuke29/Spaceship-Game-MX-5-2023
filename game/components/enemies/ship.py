@@ -17,9 +17,11 @@ class Ship(Enemy):
 
     def update(self):
         super().update()
+
+        self.move()
         
         if self.rect.y > SCREEN_HEIGHT:
-            self.kill()
+            self.is_out_of_bounds = True
 
     def move(self):
         self.rect.y += self.SPEED_Y

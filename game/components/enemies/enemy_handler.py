@@ -7,6 +7,8 @@ class EnemyHandler:
     def __init__(self, enemy_factory):
         self.enemies = pygame.sprite.Group()
         self.enemy_factory = enemy_factory
+        self.destroyed_enemies = 0
+        self.total_score = 0
 
     def update(self, player):
         for enemy in self.enemies:
@@ -14,13 +16,22 @@ class EnemyHandler:
                 enemy.update(player.rect.x, player.rect.y)
             else:
                 enemy.update()
+            
+            if enemy.was_destroyed():
+                enemy.kill()
+                self.enemy_factory.reduce_instance_count()
+                self.destroyed_enemies += 1
 
-            if not enemy.alive():
-                self.remove_enemy(enemy)
+            if enemy.is_out_of_bounds:
+                enemy.kill()
+                self.enemy_factory.reduce_instance_count()
 
-        if pygame.sprite.spritecollideany(player, self.enemies) and not player.is_blinking:
-            player.start_blink()
-            player.reduce_lifes()
+        for enemy in pygame.sprite.spritecollide(player, self.enemies, False):
+            if not player.is_blinking:
+                player.start_blink()
+                player.reduce_lifes()
+                enemy.kill()
+                self.enemy_factory.reduce_instance_count()
 
     def draw(self, screen):
         self.enemies.draw(screen)
@@ -35,12 +46,17 @@ class EnemyHandler:
         if new_enemy != None:
             self.enemies.add(new_enemy)
 
-    def remove_enemy(self, enemy):
-        self.enemies.remove(enemy)
-        self.enemy_factory.reduce_instance_count()
-
     def get_enemies(self):
         return self.enemies
+    
+    def get_destroyed_enemies_count(self):
+        return self.destroyed_enemies
 
     def get_player_collisions(self, player):
         return pygame.sprite.spritecollide(player, self.enemies, False)
+    
+    def reset(self):
+        self.enemies.empty()
+        self.enemy_factory.instance_count = 0
+        self.destroyed_enemies = 0
+        self.total_score = 0
