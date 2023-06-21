@@ -29,7 +29,12 @@ BULLET_ENEMY = pygame.image.load(os.path.join(IMG_DIR, "Bullet/bullet_2.png"))
 ENEMY_1 = pygame.image.load(os.path.join(IMG_DIR, "Enemy/enemy_1.png"))
 ENEMY_2 = pygame.image.load(os.path.join(IMG_DIR, "Enemy/enemy_2.png"))
 
-FONT_STYLE = 'freesansbold.ttf'
+FONT_STYLE = os.path.join(IMG_DIR, 'Other/Rodchenkocondc.otf')
+
+# UI constants
+EMPTY_BUTTON = pygame.image.load(os.path.join(IMG_DIR, "Other/Buttons/empty_button.png"))
+BACKWARD_BUTTON = pygame.image.load(os.path.join(IMG_DIR, "Other/Buttons/backward_button.png"))
+REPLAY_BUTTON = pygame.image.load(os.path.join(IMG_DIR, "Other/Buttons/replay_button.png"))
 
 # Movement constants
 LEFT = 'left'
