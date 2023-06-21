@@ -22,6 +22,7 @@ SHIELD_TYPE = 'shield'
 
 SPACESHIP = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship.png"))
 SPACESHIP_SHIELD = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship_shield.png"))
+SPACESHIP_WEAPON = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship_weapon.png"))
 BULLET = pygame.image.load(os.path.join(IMG_DIR, "Bullet/bullet_1.png"))
 
 BULLET_ENEMY = pygame.image.load(os.path.join(IMG_DIR, "Bullet/bullet_2.png"))
@@ -53,6 +54,7 @@ HARD_LEVEL_ENEMY_SPAWNS = [1, 2, 1]
 # Bullet constants
 BULLET_ENEMY_TYPE = 'enemy'
 BULLET_PLAYER_TYPE = 'player'
+BULLET_PLAYER_SPEED = 15
 
 # Custom events
 SPAWN_ENEMY = pygame.USEREVENT + 1

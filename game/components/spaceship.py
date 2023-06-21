@@ -6,8 +6,8 @@ class SpaceShip:
 
     WIDTH = 40
     HEIGTH = 60
-    X_POS = (SCREEN_WIDTH // 2) - WIDTH
-    Y_POS = 500
+    X_POS = (SCREEN_WIDTH // 2)
+    Y_POS = SCREEN_HEIGHT // 2
     BLINK_DURATION_SECS = 2
     BLINK_DURATION_CYCLES = BLINK_DURATION_SECS * FPS
     ALPHA_INTERVAL = (255 // (FPS // 2))
@@ -17,8 +17,8 @@ class SpaceShip:
         self.image = SPACESHIP
         self.image = pygame.transform.scale(self.image, (self.WIDTH, self.HEIGTH))
         self.rect = self.image.get_rect()
-        self.rect.x = self.X_POS
-        self.rect.y = self.Y_POS
+        self.rect.centerx = self.X_POS
+        self.rect.centery = self.Y_POS
         self.is_alive = True
         self.lifes = 3
         self.is_blinking = False
@@ -36,7 +36,13 @@ class SpaceShip:
             self.kill()
 
     def draw(self, screen):
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        vector_mouse = pygame.math.Vector2((mouse_x - self.rect.centerx), (mouse_y - self.rect.centery))
+
+        vector_mouse.scale_to_length(80)
+
         screen.blit(self.image, self.rect)
+        pygame.draw.line(screen, (255, 45, 16), self.rect.center, (self.rect.centerx + vector_mouse.x, self.rect.centery + vector_mouse.y), 3)
 
     def kill(self):
         self.is_alive = False
