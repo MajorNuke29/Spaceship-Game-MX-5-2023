@@ -1,17 +1,20 @@
-from game.utils.constants import BULLET_ENEMY_TYPE
-from game.components.bullets.bullet_enemy import BulletEnemy
 import pygame
 
-class BulletHandler:
-    def __init__(self):
-        self.bullets = pygame.sprite.Group()
+from game.components.bullets import BulletEnemy, BulletPlayer
 
-    def update(self, player):
+class BulletHandler:
+    def __init__(self, bullet_factory):
+        self.bullets = pygame.sprite.Group()
+        self.bullet_factory = bullet_factory
+
+    def update(self, player, enemies):
         for bullet in self.bullets:
             bullet.update()
 
-            if pygame.sprite.collide_rect(bullet, player):
-                player.start_blink()
+            if type(bullet) == BulletEnemy:
+                self.check_player_collition(bullet, player)
+            elif type(bullet) == BulletPlayer:
+                self.check_enemies_collition(bullet, enemies)
 
             if not bullet.alive():
                 self.remove_bullet(bullet)
@@ -20,9 +23,20 @@ class BulletHandler:
         for bullet in self.bullets:
             bullet.draw(screen)
 
-    def add_bullet(self, type, center):
-        if type == BULLET_ENEMY_TYPE:
-            self.bullets.add(BulletEnemy(center))
+    def check_player_collition(self, bullet, player):
+        if pygame.sprite.collide_rect(bullet, player) and not player.is_blinking:
+            player.start_blink()
+            player.reduce_lifes()
+
+    def check_enemies_collition(self, bullet, enemies):
+        enemies_collided = pygame.sprite.spritecollide(bullet, enemies, True)
+
+        if len(enemies_collided) > 0:
+            self.remove_bullet(bullet)
+
+    def add_bullet(self, bullet_type, origin):
+            bullet = self.bullet_factory.get_bullet(bullet_type, origin)
+            self.bullets.add(bullet)
 
     def remove_bullet(self, bullet):
         self.bullets.remove(bullet)

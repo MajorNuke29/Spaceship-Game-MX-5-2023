@@ -5,11 +5,11 @@ class Bullet(pygame.sprite.Sprite):
 
     SPEED = 0
 
-    def __init__(self, image, center):
+    def __init__(self, image, origin):
         super().__init__()
         self.image = image
         self.rect = image.get_rect()
-        self.rect.center = center
+        self.rect.center = origin
         self.is_alive = False
 
     def update(self):

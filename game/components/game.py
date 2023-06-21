@@ -1,10 +1,11 @@
 import pygame
-import random
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, BLINK
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, MEDIUM_LEVEL_MAX_ENEMIES, MEDIUM_ENEMY_SPAWN_PROBABILITIES
 from game.components.spaceship import SpaceShip
 from game.components.enemies.enemy_handler import EnemyHandler
 from game.components.bullets.bullet_handler import BulletHandler
+from game.components.enemies.factories import LevelBasedEnemyFactory, RandomEnemyFactory
+from game.components.bullets import BulletFactory
 
 
 class Game:
@@ -23,8 +24,8 @@ class Game:
         self.x_pos_bg = 0
         self.y_pos_bg = 0
         self.player = SpaceShip()
-        self.enemy_handler = EnemyHandler()
-        self.bullet_handler = BulletHandler()
+        self.enemy_handler = EnemyHandler(RandomEnemyFactory())
+        self.bullet_handler = BulletHandler(BulletFactory())
 
     def run(self):
         # Game loop: events - update - draw
@@ -40,23 +41,28 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.playing = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                self.player.shoot(self.bullet_handler)
             elif event.type == SPAWN_ENEMY:
                 self.enemy_handler.add_enemy()
             elif event.type == ENEMY_SHOOT:
                 self.enemy_handler.shoot(self.bullet_handler)
 
     def update(self):
+        if not self.player.is_alive:
+            self.playing = False
+
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.enemy_handler.update(self.player)
-        self.bullet_handler.update(self.player)
+        self.bullet_handler.update(self.player, self.enemy_handler.get_enemies())
 
     def draw(self):
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
         self.draw_background()
         self.player.draw(self.screen)
-        self.enemy_handler.draw(self.screen, self.player)
+        self.enemy_handler.draw(self.screen)
         self.bullet_handler.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()

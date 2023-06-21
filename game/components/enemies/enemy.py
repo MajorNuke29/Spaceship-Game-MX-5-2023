@@ -22,12 +22,16 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x = random.choice(self.X_POS_LIST)
         self.rect.y = self.Y_POS
         self.mov_x = random.choice(self.MOVES_X)
+        self.on_screen = False
 
     def update(self):
         self.move()
 
     def shoot(self, bullet_handler):
         bullet_handler.add_bullet(self.BULLET_TYPE, self.rect.center)
+
+    def update_on_screen(self):
+        self.on_screen =  self.rect.y > 0
 
     @abstractmethod
     def move(self):

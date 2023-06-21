@@ -1,14 +1,12 @@
-from game.components.enemies import Enemyfactory
-from game.components.enemies import Follower
 import pygame
+
+from game.components.enemies import Follower
 
 class EnemyHandler:
 
-    MAX_ENEMIES = 5
-    ENEMY_FACTORY = Enemyfactory()
-
-    def __init__(self):
+    def __init__(self, enemy_factory):
         self.enemies = pygame.sprite.Group()
+        self.enemy_factory = enemy_factory
 
     def update(self, player):
         for enemy in self.enemies:
@@ -20,23 +18,29 @@ class EnemyHandler:
             if not enemy.alive():
                 self.remove_enemy(enemy)
 
-    def draw(self, screen, player):
+        if pygame.sprite.spritecollideany(player, self.enemies) and not player.is_blinking:
+            player.start_blink()
+            player.reduce_lifes()
+
+    def draw(self, screen):
         self.enemies.draw(screen)
-        
-        for enemy in self.get_player_collisions(player):
-            pygame.draw.rect(screen, (255, 14, 14), enemy.rect, 1)
 
     def shoot(self, bullet_handler):
         for enemy in self.enemies:
             enemy.shoot(bullet_handler)
 
     def add_enemy(self):
-        if len(self.enemies) < self.MAX_ENEMIES:
-            new_enemy = self.ENEMY_FACTORY.get_rand_enemy()
+        new_enemy = self.enemy_factory.get_enemy()
+        
+        if new_enemy != None:
             self.enemies.add(new_enemy)
 
     def remove_enemy(self, enemy):
         self.enemies.remove(enemy)
+        self.enemy_factory.reduce_instance_count()
+
+    def get_enemies(self):
+        return self.enemies
 
     def get_player_collisions(self, player):
         return pygame.sprite.spritecollide(player, self.enemies, False)
