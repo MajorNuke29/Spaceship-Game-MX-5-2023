@@ -15,9 +15,10 @@ class Enemy(pygame.sprite.Sprite):
     INTERVAL = 0
     BULLET_TYPE = BULLET_ENEMY_TYPE
 
-    def __init__(self, image):
+    def __init__(self, image, score):
         super().__init__()
         self.image = image
+        self.score = score
         self.rect = self.image.get_rect()
         self.rect.x = random.choice(self.X_POS_LIST)
         self.rect.y = self.Y_POS
@@ -32,6 +33,9 @@ class Enemy(pygame.sprite.Sprite):
 
     def shoot(self, bullet_handler):
         bullet_handler.add_bullet(self.BULLET_TYPE, self.rect.center)
+
+    def get_score(self):
+        return self.score
 
     def destroy(self):
         self.is_distroyed = True

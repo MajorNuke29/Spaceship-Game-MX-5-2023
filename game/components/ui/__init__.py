@@ -5,3 +5,5 @@ from game.components.ui.button_list import ButtonList
 from game.components.ui.menu import Menu
 from game.components.ui.menu_with_game_stats import MenuWithGameStats
 from game.components.ui.menu_handler import MenuHandler
+from game.components.ui.heart import Heart
+from game.components.ui.player_stats import PlayerStats

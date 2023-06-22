@@ -16,7 +16,7 @@ class SpaceShip:
     ALPHA_INTERVAL = (255 // (FPS // 2))
     SPEED = 12
 
-    def __init__(self):
+    def __init__(self, lifes = 3):
         self.image = SPACESHIP
         self.image = pygame.transform.scale(self.image, (self.WIDTH, self.HEIGTH))
         self.rect = self.image.get_rect()
@@ -24,7 +24,7 @@ class SpaceShip:
         self.rect.centery = self.Y_POS
         self.weapon = Weapon(self, self.HEIGTH)
         self.is_alive = True
-        self.lifes = 3
+        self.lifes = lifes
         self.is_blinking = False
         self.is_visible = True
         self.can_shoot = True
@@ -43,6 +43,9 @@ class SpaceShip:
 
         if self.lifes <= 0:
             self.kill()
+
+    def set_lifes(self, lifes):
+        self.lifes = lifes
 
     def __shoot_delay(self):
         if self.shoot_delay_cycles < self.DELAY_DURATION_CYCLES:

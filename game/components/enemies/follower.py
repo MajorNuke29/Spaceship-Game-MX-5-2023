@@ -15,7 +15,7 @@ class Follower(Enemy):
         self.image = ENEMY_2
         self.image = pygame.transform.scale(
             self.image, (self.WIDTH, self.HEIGHT))
-        super().__init__(self.image)
+        super().__init__(self.image,score = 60)
         self.moves = 0
         self.dir_vector = None
 

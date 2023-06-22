@@ -1,13 +1,13 @@
 import pygame
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES, HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES, MENU_TRY_AGAIN, MENU_EXIT, MENU_CHANGE_DIFICULTY, MENU_OPTION_EASY, MENU_OPTION_MEDIUM, MENU_OPTION_HARD
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES, HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES, MENU_TRY_AGAIN, MENU_EXIT, MENU_CHANGE_DIFICULTY, MENU_OPTION_EASY, MENU_OPTION_MEDIUM, MENU_OPTION_HARD, EASY_LEVEL_LIFES, MEDIUM_LEVEL_LIFES, HARD_LEVEL_LIFES
 
 from game.components.spaceship import SpaceShip
 from game.components.enemies.enemy_handler import EnemyHandler
 from game.components.bullets.bullet_handler import BulletHandler
 from game.components.enemies.factories import LevelBasedEnemyFactory
 from game.components.bullets import BulletFactory
-from game.components.ui import MenuHandler
+from game.components.ui import MenuHandler, PlayerStats
 
 
 class Game:
@@ -28,6 +28,7 @@ class Game:
         self.y_pos_bg = 0
 
         self.player = SpaceShip()
+        self.player_stats = PlayerStats(self.player.lifes)
         self.enemy_handler = None
         self.bullet_handler = BulletHandler(BulletFactory())
         self.menu_handler = MenuHandler()
@@ -72,6 +73,7 @@ class Game:
                 self.playing = False
                 self.deaths_count += 1
                 self.destroyed_enemies = self.enemy_handler.get_destroyed_enemies_count()
+                self.score = self.enemy_handler.get_current_score()
 
                 if self.max_score < self.score:
                     self.max_score = self.score
@@ -80,6 +82,7 @@ class Game:
 
             user_input = pygame.key.get_pressed()
             self.player.update(user_input)
+            self.player_stats.update(self.player.lifes, self.enemy_handler.get_current_score())
             self.enemy_handler.update(self.player)
             self.bullet_handler.update(self.player, self.enemy_handler.get_enemies())
 
@@ -89,6 +92,7 @@ class Game:
 
         if self.playing:
             self.player.draw(self.screen)
+            self.player_stats.draw(self.screen)
             self.enemy_handler.draw(self.screen)
             self.bullet_handler.draw(self.screen)
         else:
@@ -113,12 +117,18 @@ class Game:
 
         if action == MENU_OPTION_EASY:
             self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES))
+            self.player.set_lifes(EASY_LEVEL_LIFES)
+            self.player_stats.set_lifes(EASY_LEVEL_LIFES)
             self.playing = True
         elif action == MENU_OPTION_MEDIUM:
             self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES))
+            self.player.set_lifes(MEDIUM_LEVEL_LIFES)
+            self.player_stats.set_lifes(MEDIUM_LEVEL_LIFES)
             self.playing = True
         elif action == MENU_OPTION_HARD:
             self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES))
+            self.player.set_lifes(HARD_LEVEL_LIFES)
+            self.player_stats.set_lifes(HARD_LEVEL_LIFES)
             self.playing = True
         elif action == MENU_TRY_AGAIN:
             self.reset()
@@ -132,6 +142,7 @@ class Game:
 
     def reset(self):
         self.player.reset()
+        self.player_stats.reset()
         self.enemy_handler.reset()
         self.bullet_handler.reset()
         self.menu_handler.reset()

@@ -21,6 +21,7 @@ class EnemyHandler:
                 enemy.kill()
                 self.enemy_factory.reduce_instance_count()
                 self.destroyed_enemies += 1
+                self.total_score += enemy.get_score()
 
             if enemy.is_out_of_bounds:
                 enemy.kill()
@@ -51,6 +52,9 @@ class EnemyHandler:
     
     def get_destroyed_enemies_count(self):
         return self.destroyed_enemies
+    
+    def get_current_score(self):
+        return self.total_score
 
     def get_player_collisions(self, player):
         return pygame.sprite.spritecollide(player, self.enemies, False)

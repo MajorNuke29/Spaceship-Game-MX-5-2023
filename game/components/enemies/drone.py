@@ -14,7 +14,7 @@ class Drone(Enemy):
     def __init__(self):
         self.image = ENEMY_2
         self.image = pygame.transform.scale(self.image, (self.WIDTH, self.HEIGHT))
-        super().__init__(self.image)
+        super().__init__(self.image, score = 40)
         self.mov_x = random.choice(self.MOVES_X)
         self.mov_y = random.choice(self.MOVES_Y)
         self.bounces = 0

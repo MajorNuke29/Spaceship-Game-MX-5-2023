@@ -24,6 +24,11 @@ SPACESHIP = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship.png"))
 SPACESHIP_SHIELD = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship_shield.png"))
 SPACESHIP_WEAPON = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship_weapon.png"))
 BULLET = pygame.image.load(os.path.join(IMG_DIR, "Bullet/bullet_1.png"))
+HEART_SPRITES = [pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart.png')),
+                 pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart_1.png')),
+                 pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart_2.png')),
+                 pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart_3.png')),
+                 pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart_4.png'))]
 
 BULLET_ENEMY = pygame.image.load(os.path.join(IMG_DIR, "Bullet/bullet_2.png"))
 ENEMY_1 = pygame.image.load(os.path.join(IMG_DIR, "Enemy/enemy_1.png"))
@@ -53,6 +58,10 @@ ENEMIES_TYPES = [ENEMY_SHIP_TYPE, ENEMY_DRONE_TYPE, ENEMY_FOLLOWER_TYPE]
 EASY_LEVEL_MAX_ENEMIES = 4
 MEDIUM_LEVEL_MAX_ENEMIES = 6
 HARD_LEVEL_MAX_ENEMIES = 8
+
+EASY_LEVEL_LIFES = 6
+MEDIUM_LEVEL_LIFES = 5
+HARD_LEVEL_LIFES = 4
 
 EASY_LEVEL_ENEMY_SPAWNS = [3, 1, 0]
 MEDIUM_LEVEL_ENEMY_SPAWNS = [2, 3, 1]
