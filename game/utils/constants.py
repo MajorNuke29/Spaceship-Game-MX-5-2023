@@ -71,9 +71,12 @@ SPAWN_ENEMY = pygame.USEREVENT + 1
 ENEMY_SHOOT = pygame.USEREVENT + 5
 
 MENU_EXIT = 'exit'
-MENU_RETURN = 'return'
+MENU_TRY_AGAIN = 'return'
 MENU_PLAY = 'play'
 MENU_CHANGE = 'change'
+MENU_OPTION_EASY = 'easy'
+MENU_OPTION_MEDIUM = 'medium'
+MENU_OPTION_HARD = 'hard'
 
 # Color
 BLACK_COLOR = (0, 0, 0)

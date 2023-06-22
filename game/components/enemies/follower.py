@@ -1,7 +1,7 @@
 import pygame, random
 
 from game.components.enemies import Enemy
-from game.utils.constants import ENEMY_2, FPS, SCREEN_WIDTH, SCREEN_HEIGHT
+from game.utils.constants import ENEMY_2, FPS
 
 
 class Follower(Enemy):
@@ -28,7 +28,7 @@ class Follower(Enemy):
         else:
             self.move_out_bounds()
 
-        if self.is_out_of_screen() and self.on_screen:
+        if self.is_out_of_screen() and self.has_entered_screen:
             self.is_out_of_bounds = True
 
     def move(self, player_x, player_y):

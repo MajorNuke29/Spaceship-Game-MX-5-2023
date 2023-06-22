@@ -1,14 +1,13 @@
 import pygame
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, WHITE_COLOR, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MENU_PLAY, MENU_CHANGE
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES, HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES, MENU_TRY_AGAIN, MENU_EXIT, MENU_OPTION_EASY, MENU_OPTION_MEDIUM, MENU_OPTION_HARD
 
-from game.utils import text_utils
 from game.components.spaceship import SpaceShip
 from game.components.enemies.enemy_handler import EnemyHandler
 from game.components.bullets.bullet_handler import BulletHandler
 from game.components.enemies.factories import LevelBasedEnemyFactory
 from game.components.bullets import BulletFactory
-from game.components.ui import Menu
+from game.components.ui import MenuHandler
 
 
 class Game:
@@ -29,9 +28,9 @@ class Game:
         self.y_pos_bg = 0
 
         self.player = SpaceShip()
-        self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES))
+        self.enemy_handler = None
         self.bullet_handler = BulletHandler(BulletFactory())
-        self.main_menu = Menu('SPACESHIP', ['Play', 'Controls'], [MENU_PLAY, MENU_CHANGE], title_location = (0,0), buttons_location = (SCREEN_WIDTH // 2, 0))
+        self.menu_handler = MenuHandler()
         self.deaths_count = 0
         self.destroyed_enemies = 0
 
@@ -57,12 +56,12 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.runnig = False
                     self.playing = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN and self.playing:
                 if event.button == 1:
                     self.player.shoot(self.bullet_handler)
-            elif event.type == SPAWN_ENEMY:
+            elif event.type == SPAWN_ENEMY and self.playing:
                 self.enemy_handler.add_enemy()
-            elif event.type == ENEMY_SHOOT:
+            elif event.type == ENEMY_SHOOT and self.playing:
                 self.enemy_handler.shoot(self.bullet_handler)
 
     def update(self):
@@ -77,8 +76,6 @@ class Game:
             self.player.update(user_input)
             self.enemy_handler.update(self.player)
             self.bullet_handler.update(self.player, self.enemy_handler.get_enemies())
-        else:
-            self.playing = self.main_menu.play
 
     def draw(self):
         self.clock.tick(FPS)
@@ -89,7 +86,7 @@ class Game:
             self.enemy_handler.draw(self.screen)
             self.bullet_handler.draw(self.screen)
         else:
-            self.main_menu.draw(self.screen)
+            self.menu_actions()
 
         pygame.display.update()
         pygame.display.flip()
@@ -105,15 +102,29 @@ class Game:
             self.y_pos_bg = 0
         self.y_pos_bg += self.game_speed
 
-    def draw_menu(self):
-        if self.deaths_count == 0:
-            text, text_rect = text_utils.get_text_surface("Menu", 30, WHITE_COLOR)
-        else:
-            text, text_rect = text_utils.get_text_surface("Enemies destroyed: " + str(self.destroyed_enemies), 30, WHITE_COLOR)
-        
-        self.screen.blit(text, text_rect)
+    def menu_actions(self):
+        action = self.menu_handler.draw(self.screen)
+
+        if action == MENU_OPTION_EASY:
+            self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES))
+            self.playing = True
+        elif action == MENU_OPTION_MEDIUM:
+            self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES))
+            self.playing = True
+        elif action == MENU_OPTION_HARD:
+            self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES))
+            self.playing = True
+        elif action == MENU_TRY_AGAIN:
+            self.reset()
+            self.playing = True
+        elif action == MENU_EXIT:
+            self.playing = False
+            self.runnig = False
+
+        print(action)
 
     def reset(self):
         self.player.reset()
         self.enemy_handler.reset()
         self.bullet_handler.reset()
+        self.menu_handler.reset()

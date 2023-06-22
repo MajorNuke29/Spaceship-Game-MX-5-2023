@@ -33,6 +33,17 @@ class ButtonList:
         return buttons
 
     def draw(self, screen):
+        action = None
+
         for button in self.buttons:
-            button.draw(screen)
+            if action == None:
+                action = button.draw(screen)
+            else:
+                button.draw(screen)
+
+        return action
+    
+    def reset(self):
+        for button in self.buttons:
+            button.reset()
 

@@ -10,7 +10,7 @@ class Button:
     BUTTON_MIN_HEIGHT = FONT_SIZE + 30
 
     def __init__(self, image, action, x, y, caption):
-        self.image, self.image_hover = self.gen_button(image, caption)
+        self.image, self.image_hover = self.gen_button_sprites(image, caption)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -22,12 +22,14 @@ class Button:
 
         if self.rect.collidepoint(mouse):
             screen.blit(self.image_hover, self.rect)
+
             if pygame.mouse.get_pressed()[0] and not self.clicked:
                 self.clicked = True
+                return self.action
         else:
             screen.blit(self.image, self.rect)
 
-    def gen_button(self, image, caption):
+    def gen_button_sprites(self, image, caption):
         button_text, button_text_rect  = txt.get_text_surface(caption, FONT_SIZE, WHITE_COLOR)
 
         width = button_text_rect.width + self.TEXT_PADDING
@@ -39,3 +41,6 @@ class Button:
         hover_button = pygame.transform.scale_by(button, 1.2)
 
         return button, hover_button
+    
+    def reset(self):
+        self.clicked = False
