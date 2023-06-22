@@ -1,6 +1,6 @@
 import pygame
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, WHITE_COLOR, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, WHITE_COLOR, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MENU_PLAY, MENU_CHANGE
 
 from game.utils import text_utils
 from game.components.spaceship import SpaceShip
@@ -8,7 +8,7 @@ from game.components.enemies.enemy_handler import EnemyHandler
 from game.components.bullets.bullet_handler import BulletHandler
 from game.components.enemies.factories import LevelBasedEnemyFactory
 from game.components.bullets import BulletFactory
-from game.components.ui import MainMenu
+from game.components.ui import Menu
 
 
 class Game:
@@ -31,13 +31,14 @@ class Game:
         self.player = SpaceShip()
         self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES))
         self.bullet_handler = BulletHandler(BulletFactory())
-        self.main_menu = MainMenu()
+        self.main_menu = Menu('SPACESHIP', ['Play', 'Controls'], [MENU_PLAY, MENU_CHANGE], title_location = (0,0), buttons_location = (SCREEN_WIDTH // 2, 0))
         self.deaths_count = 0
         self.destroyed_enemies = 0
 
     def run(self):
         # Game loop: events - update - draw
         self.runnig = True
+        pygame.event.set_grab(True)
 
         while self.runnig:
             self.events()
@@ -52,8 +53,13 @@ class Game:
             if event.type == pygame.QUIT:
                 self.runnig = False
                 self.playing = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.runnig = False
+                    self.playing = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                self.player.shoot(self.bullet_handler)
+                if event.button == 1:
+                    self.player.shoot(self.bullet_handler)
             elif event.type == SPAWN_ENEMY:
                 self.enemy_handler.add_enemy()
             elif event.type == ENEMY_SHOOT:

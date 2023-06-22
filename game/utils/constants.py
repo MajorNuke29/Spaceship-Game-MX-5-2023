@@ -31,6 +31,7 @@ ENEMY_2 = pygame.image.load(os.path.join(IMG_DIR, "Enemy/enemy_2.png"))
 
 FONT_STYLE = os.path.join(IMG_DIR, 'Other/Rodchenkocondc.otf')
 FONT_SIZE = 30
+TITLE_FONT_SIZE = 60
 
 # UI constants
 EMPTY_BUTTON = pygame.image.load(os.path.join(IMG_DIR, "Other/Buttons/empty_button.png"))
@@ -72,6 +73,7 @@ ENEMY_SHOOT = pygame.USEREVENT + 5
 MENU_EXIT = 'exit'
 MENU_RETURN = 'return'
 MENU_PLAY = 'play'
+MENU_CHANGE = 'change'
 
 # Color
 BLACK_COLOR = (0, 0, 0)
