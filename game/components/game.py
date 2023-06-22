@@ -1,6 +1,6 @@
 import pygame
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES, HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES, MENU_TRY_AGAIN, MENU_EXIT, MENU_CHANGE, MENU_OPTION_EASY, MENU_OPTION_MEDIUM, MENU_OPTION_HARD
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES, HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES, MENU_TRY_AGAIN, MENU_EXIT, MENU_CHANGE_DIFICULTY, MENU_OPTION_EASY, MENU_OPTION_MEDIUM, MENU_OPTION_HARD
 
 from game.components.spaceship import SpaceShip
 from game.components.enemies.enemy_handler import EnemyHandler
@@ -33,6 +33,8 @@ class Game:
         self.menu_handler = MenuHandler()
         self.deaths_count = 0
         self.destroyed_enemies = 0
+        self.score = 0
+        self.max_score = 0
 
     def run(self):
         # Game loop: events - update - draw
@@ -70,7 +72,11 @@ class Game:
                 self.playing = False
                 self.deaths_count += 1
                 self.destroyed_enemies = self.enemy_handler.get_destroyed_enemies_count()
-                self.reset()
+
+                if self.max_score < self.score:
+                    self.max_score = self.score
+
+                self.menu_handler.update(self.score, self.max_score, self.destroyed_enemies, self.deaths_count)
 
             user_input = pygame.key.get_pressed()
             self.player.update(user_input)
@@ -117,7 +123,7 @@ class Game:
         elif action == MENU_TRY_AGAIN:
             self.reset()
             self.playing = True
-        elif action == MENU_CHANGE:
+        elif action == MENU_CHANGE_DIFICULTY:
             self.reset()
             self.playing = False
         elif action == MENU_EXIT:
