@@ -1,6 +1,7 @@
-
 import pygame
+
 from game.utils.constants import SPACESHIP, SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BULLET_PLAYER_TYPE
+from game.components.weapon import Weapon
 
 class SpaceShip:
 
@@ -10,6 +11,8 @@ class SpaceShip:
     Y_POS = SCREEN_HEIGHT // 2
     BLINK_DURATION_SECS = 2
     BLINK_DURATION_CYCLES = BLINK_DURATION_SECS * FPS
+    DELAY_DURATION_SECS = 0.3
+    DELAY_DURATION_CYCLES = DELAY_DURATION_SECS * FPS
     ALPHA_INTERVAL = (255 // (FPS // 2))
     SPEED = 12
 
@@ -19,15 +22,21 @@ class SpaceShip:
         self.rect = self.image.get_rect()
         self.rect.centerx = self.X_POS
         self.rect.centery = self.Y_POS
+        self.weapon = Weapon(self, self.HEIGTH)
         self.is_alive = True
         self.lifes = 3
         self.is_blinking = False
         self.is_visible = True
-        self.cycles = self.BLINK_DURATION_CYCLES
+        self.can_shoot = True
+        self.blink_cycles = self.BLINK_DURATION_CYCLES
+        self.shoot_delay_cycles = self.DELAY_DURATION_CYCLES
         self.alpha_value = 255
 
     def update(self, user_input):
         self.move(user_input)
+
+        if not self.can_shoot:
+            self.__shoot_delay()
 
         if self.is_blinking:
             self.__blink()
@@ -35,14 +44,27 @@ class SpaceShip:
         if self.lifes <= 0:
             self.kill()
 
+    def __shoot_delay(self):
+        if self.shoot_delay_cycles < self.DELAY_DURATION_CYCLES:
+            self.shoot_delay_cycles += 1
+        else:
+            self.can_shoot = True
+
+    def __start_shooting_delay(self):
+        self.can_shoot = False
+        self.shoot_delay_cycles = 0
+
     def draw(self, screen):
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        vector_mouse = pygame.math.Vector2((mouse_x - self.rect.centerx), (mouse_y - self.rect.centery))
-
-        vector_mouse.scale_to_length(80)
-
         screen.blit(self.image, self.rect)
-        pygame.draw.line(screen, (255, 45, 16), self.rect.center, (self.rect.centerx + vector_mouse.x, self.rect.centery + vector_mouse.y), 3)
+        self.weapon.draw(screen)
+
+        # mouse_x, mouse_y = pygame.mouse.get_pos()
+        # vector_mouse = pygame.math.Vector2((mouse_x - self.rect.centerx), (mouse_y - self.rect.centery))
+        # len_line = 80
+
+        # vector_mouse.scale_to_length(len_line)
+
+        # pygame.draw.line(screen, (255, 45, 16), self.rect.center, (self.rect.centerx + vector_mouse.x, self.rect.centery + vector_mouse.y), 3)
 
     def kill(self):
         self.is_alive = False
@@ -51,7 +73,7 @@ class SpaceShip:
         self.lifes -= 1
 
     def __blink(self):
-        if self.cycles < self.BLINK_DURATION_CYCLES:
+        if self.blink_cycles < self.BLINK_DURATION_CYCLES:
             new_alpha = self.alpha_value - self.ALPHA_INTERVAL
 
             if new_alpha < 0:
@@ -66,7 +88,7 @@ class SpaceShip:
                 self.alpha_value += self.ALPHA_INTERVAL
 
             self.image.set_alpha(self.alpha_value)
-            self.cycles += 1
+            self.blink_cycles += 1
         else:
             self.is_blinking = False
             self.is_visible = True
@@ -75,10 +97,13 @@ class SpaceShip:
 
     def start_blink(self):
         self.is_blinking = True
-        self.cycles = 0
+        self.blink_cycles = 0
 
     def shoot(self, bullet_handler):
-        bullet_handler.add_bullet(BULLET_PLAYER_TYPE, self.rect.center)
+        if self.can_shoot:
+            bullet_handler.add_bullet(BULLET_PLAYER_TYPE, self.weapon.rect.center)
+            self.__start_shooting_delay()
+
 
 
     def move(self, user_input):
@@ -115,7 +140,7 @@ class SpaceShip:
         self.lifes = 3
         self.is_blinking = False
         self.is_visible = True
-        self.cycles = self.BLINK_DURATION_CYCLES
+        self.blink_cycles = self.BLINK_DURATION_CYCLES
         self.alpha_value = 255
         self.rect.x = self.X_POS
         self.rect.y = self.Y_POS

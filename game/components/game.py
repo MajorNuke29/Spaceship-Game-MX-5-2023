@@ -1,6 +1,6 @@
 import pygame
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES, HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES, MENU_TRY_AGAIN, MENU_EXIT, MENU_OPTION_EASY, MENU_OPTION_MEDIUM, MENU_OPTION_HARD
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES, HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES, MENU_TRY_AGAIN, MENU_EXIT, MENU_CHANGE, MENU_OPTION_EASY, MENU_OPTION_MEDIUM, MENU_OPTION_HARD
 
 from game.components.spaceship import SpaceShip
 from game.components.enemies.enemy_handler import EnemyHandler
@@ -14,8 +14,8 @@ class Game:
 
     def __init__(self):
         pygame.init()
-        pygame.time.set_timer(SPAWN_ENEMY, 700)
-        pygame.time.set_timer(ENEMY_SHOOT, 1500)
+        pygame.time.set_timer(SPAWN_ENEMY, 600)
+        pygame.time.set_timer(ENEMY_SHOOT, 1200)
         pygame.display.set_caption(TITLE)
         pygame.display.set_icon(ICON)
 
@@ -117,11 +117,12 @@ class Game:
         elif action == MENU_TRY_AGAIN:
             self.reset()
             self.playing = True
+        elif action == MENU_CHANGE:
+            self.reset()
+            self.playing = False
         elif action == MENU_EXIT:
             self.playing = False
             self.runnig = False
-
-        print(action)
 
     def reset(self):
         self.player.reset()
