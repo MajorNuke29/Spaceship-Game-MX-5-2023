@@ -30,6 +30,7 @@ ENEMY_1 = pygame.image.load(os.path.join(IMG_DIR, "Enemy/enemy_1.png"))
 ENEMY_2 = pygame.image.load(os.path.join(IMG_DIR, "Enemy/enemy_2.png"))
 
 FONT_STYLE = os.path.join(IMG_DIR, 'Other/Rodchenkocondc.otf')
+FONT_SIZE = 30
 
 # UI constants
 EMPTY_BUTTON = pygame.image.load(os.path.join(IMG_DIR, "Other/Buttons/empty_button.png"))
@@ -63,10 +64,14 @@ BULLET_PLAYER_SPEED = 15
 
 # Custom events
 SPAWN_ENEMY = pygame.USEREVENT + 1
-ENEMY_SHIP_SHOOT = pygame.USEREVENT + 2
-ENEMY_DRONE_SHOOT = pygame.USEREVENT + 3
-ENEMY_FOLLOWER_SHOOT = pygame.USEREVENT + 4
+# ENEMY_SHIP_SHOOT = pygame.USEREVENT + 2
+# ENEMY_DRONE_SHOOT = pygame.USEREVENT + 3
+# ENEMY_FOLLOWER_SHOOT = pygame.USEREVENT + 4
 ENEMY_SHOOT = pygame.USEREVENT + 5
+
+MENU_EXIT = 'exit'
+MENU_RETURN = 'return'
+MENU_PLAY = 'play'
 
 # Color
 BLACK_COLOR = (0, 0, 0)

@@ -8,7 +8,7 @@ from game.components.enemies.enemy_handler import EnemyHandler
 from game.components.bullets.bullet_handler import BulletHandler
 from game.components.enemies.factories import LevelBasedEnemyFactory
 from game.components.bullets import BulletFactory
-from game.components.menu import MenuButtons
+from game.components.ui import MainMenu
 
 
 class Game:
@@ -31,7 +31,7 @@ class Game:
         self.player = SpaceShip()
         self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES))
         self.bullet_handler = BulletHandler(BulletFactory())
-        self.main_menu = MenuButtons(["Play", "Controls"])
+        self.main_menu = MainMenu()
         self.deaths_count = 0
         self.destroyed_enemies = 0
 
@@ -52,10 +52,6 @@ class Game:
             if event.type == pygame.QUIT:
                 self.runnig = False
                 self.playing = False
-            elif event.type == pygame.KEYDOWN and not self.playing:
-                self.playing = True
-            elif event.type == pygame.MOUSEMOTION and not self.playing:
-                self.main_menu.update(event.pos)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.player.shoot(self.bullet_handler)
             elif event.type == SPAWN_ENEMY:
@@ -75,11 +71,14 @@ class Game:
             self.player.update(user_input)
             self.enemy_handler.update(self.player)
             self.bullet_handler.update(self.player, self.enemy_handler.get_enemies())
+        else:
+            self.playing = self.main_menu.play
 
     def draw(self):
+        self.clock.tick(FPS)
+        self.draw_background()
+
         if self.playing:
-            self.clock.tick(FPS)
-            self.draw_background()
             self.player.draw(self.screen)
             self.enemy_handler.draw(self.screen)
             self.bullet_handler.draw(self.screen)
