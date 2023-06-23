@@ -1,8 +1,3 @@
-import pygame
-
-from game.components.powerups import HealUp, Shield
-
-
 class PoweUpHandler:
 
     def __init__(self, powerup_factory):
@@ -28,7 +23,7 @@ class PoweUpHandler:
 
     def add_powerup(self, location):
         powerup = self.powerup_factory.get_powerup(location)
-        
+
         if powerup != None:
             self.powerups.append(powerup)
 

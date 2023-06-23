@@ -1,6 +1,6 @@
 import pygame
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES, HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES, MENU_TRY_AGAIN, MENU_EXIT, MENU_CHANGE_DIFICULTY, MENU_OPTION_EASY, MENU_OPTION_MEDIUM, MENU_OPTION_HARD, EASY_LEVEL_LIFES, MEDIUM_LEVEL_LIFES, HARD_LEVEL_LIFES, EASY_LEVEL_DROPS, MEDIUM_LEVEL_DROPS, HARD_LEVEL_DROPS
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, SPAWN_ENEMY, ENEMY_SHOOT, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES, HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES, MENU_TRY_AGAIN, MENU_EXIT, MENU_CHANGE_DIFICULTY, MENU_OPTION_EASY, MENU_OPTION_MEDIUM, MENU_OPTION_HARD, EASY_LEVEL_LIFES, MEDIUM_LEVEL_LIFES, HARD_LEVEL_LIFES, EASY_LEVEL_DROPS, MEDIUM_LEVEL_DROPS, HARD_LEVEL_DROPS
 
 from game.components.spaceship import SpaceShip
 from game.components.enemies.enemy_handler import EnemyHandler
@@ -9,7 +9,7 @@ from game.components.enemies.factories import LevelBasedEnemyFactory
 from game.components.bullets import BulletFactory
 from game.components.ui import MenuHandler, PlayerStats
 from game.components.powerups import PoweUpHandler, PowerupFactory
-
+from game.components import ExplosionHandler, ExplosionFactory
 
 class Game:
 
@@ -34,6 +34,7 @@ class Game:
         self.power_up_handler = None
         self.bullet_handler = BulletHandler(BulletFactory())
         self.menu_handler = MenuHandler()
+        self.explosion_handler = ExplosionHandler(ExplosionFactory())
         self.deaths_count = 0
         self.destroyed_enemies = 0
         self.score = 0
@@ -87,7 +88,8 @@ class Game:
             self.player_stats.update(self.player.lifes, self.enemy_handler.get_current_score())
             self.power_up_handler.update(self.player)
             self.enemy_handler.update(self.player)
-            self.bullet_handler.update(self.player, self.enemy_handler.get_enemies(), self.power_up_handler)
+            self.explosion_handler.update(self.enemy_handler.get_enemies())
+            self.bullet_handler.update(self.player, self.enemy_handler.get_enemies(), self.power_up_handler, self.explosion_handler)
 
     def draw(self):
         self.clock.tick(FPS)
@@ -99,6 +101,7 @@ class Game:
             self.power_up_handler.draw(self.screen)
             self.enemy_handler.draw(self.screen)
             self.bullet_handler.draw(self.screen)
+            self.explosion_handler.draw(self.screen)
         else:
             self.menu_actions()
 
@@ -153,4 +156,5 @@ class Game:
         self.enemy_handler.reset()
         self.bullet_handler.reset()
         self.power_up_handler.reset()
+        self.explosion_handler.reset()
         self.menu_handler.reset()

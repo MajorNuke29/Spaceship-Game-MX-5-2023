@@ -1,15 +1,25 @@
-from game.utils.constants import EXPLOSION_1_SPRITES
-from game.components import AnimatedSprite
+import pygame
+
+from game.components import MisileExplosion
+from game.utils.constants import ENEMY_EXPLOSION
 
 class ExplosionHandler:
 
-    EXPLOSION_SIZE = (100, 100)
-
-    def __init__(self):
+    def __init__(self, explosion_factory):
         self.explosions = []
+        self.explosion_factory = explosion_factory
 
-    def update(self):
+    def update(self, enemies):
         for explosion in self.explosions:
+
+            if type(explosion) == MisileExplosion:
+                enemies_collided = pygame.sprite.spritecollide(explosion, enemies, False)
+
+                if len(enemies_collided) > 0:
+                    for enemy in enemies_collided:
+                        enemy.destroy()
+                        self.add_explosion(ENEMY_EXPLOSION, enemy.rect.center)
+
             if not explosion.animation_has_started:
                 explosion.start_animation()
                 
@@ -22,9 +32,12 @@ class ExplosionHandler:
         for explosion in self.explosions:
             explosion.draw(screen)
 
-    def add_explosion(self, location):
-        explosion = AnimatedSprite(location, self.EXPLOSION_SIZE, EXPLOSION_1_SPRITES, .8)
+    def add_explosion(self, type, location):
+        explosion = self.explosion_factory.get_explosion(type, location)
         self.explosions.append(explosion)
 
     def remove_explosion(self, explosion):
         self.explosions.remove(explosion)
+
+    def reset(self):
+        self.explosions = []

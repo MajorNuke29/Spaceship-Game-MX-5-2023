@@ -1,5 +1,5 @@
-from game.utils.constants import BULLET_ENEMY_TYPE, BULLET_PLAYER_TYPE
-from game.components.bullets import BulletEnemy, BulletPlayer
+from game.utils.constants import BULLET_ENEMY_TYPE, BULLET_PLAYER_TYPE, BULLET_MISILE_TYPE
+from game.components.bullets import BulletEnemy, BulletPlayer, MisileBullet
 
 class BulletFactory:
     
@@ -12,5 +12,7 @@ class BulletFactory:
             bullet = BulletEnemy(origin)
         elif bullet_type == BULLET_PLAYER_TYPE:
             bullet = BulletPlayer(origin)
+        elif bullet_type == BULLET_MISILE_TYPE:
+            bullet = MisileBullet(origin)
 
         return bullet

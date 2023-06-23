@@ -1,6 +1,6 @@
 import pygame
 
-from game.utils.constants import SPACESHIP, SPACESHIP_SHIELD, SHIELD_TYPE, MISILE_TYPE, HEART_TYPE, SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BULLET_PLAYER_TYPE
+from game.utils.constants import SPACESHIP, SPACESHIP_SHIELD, SHIELD_TYPE, MISILE_TYPE, HEART_TYPE, SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BULLET_PLAYER_TYPE, BULLET_MISILE_TYPE
 from game.components.weapon import Weapon
 
 class SpaceShip:
@@ -50,7 +50,7 @@ class SpaceShip:
             self.is_invincible =True
 
         elif powerup.type == MISILE_TYPE:
-            pass
+            self.bullet = BULLET_MISILE_TYPE
 
         elif powerup.type == HEART_TYPE:
             if self.lifes < self.default_lifes:
@@ -70,7 +70,7 @@ class SpaceShip:
             self.is_invincible = False
 
         elif self.powerup.type == MISILE_TYPE:
-            pass
+            self.bullet = BULLET_PLAYER_TYPE
 
         self.powerup = None
         self.powerup_start = 0
@@ -163,7 +163,7 @@ class SpaceShip:
 
     def shoot(self, bullet_handler):
         if self.can_shoot:
-            bullet_handler.add_bullet(BULLET_PLAYER_TYPE, self.weapon.rect.center)
+            bullet_handler.add_bullet(self.bullet, self.weapon.rect.center)
             self.__start_shooting_delay()
 
 

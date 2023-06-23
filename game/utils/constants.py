@@ -95,7 +95,11 @@ HARD_LEVEL_ENEMY_SPAWNS = [1, 2, 2]
 # Bullet constants
 BULLET_ENEMY_TYPE = 'enemy'
 BULLET_PLAYER_TYPE = 'player'
+BULLET_MISILE_TYPE = 'misile bullet'
 BULLET_PLAYER_SPEED = 15
+
+MISILE_EXPLOSION = 'misile exp'
+ENEMY_EXPLOSION = 'enemy exp'
 
 # Drop constants
 EASY_LEVEL_DROPS = [1,1,0,2]

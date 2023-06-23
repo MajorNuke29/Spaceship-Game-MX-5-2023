@@ -1,30 +1,27 @@
 import pygame
 
-from game.components.bullets import BulletEnemy, BulletPlayer
-from game.components import ExplosionHandler
+from game.components.bullets import BulletEnemy, BulletPlayer, MisileBullet
+from game.utils.constants import ENEMY_EXPLOSION, MISILE_EXPLOSION
 
 class BulletHandler:
     def __init__(self, bullet_factory):
         self.bullets = pygame.sprite.Group()
         self.bullet_factory = bullet_factory
-        self.explosion_handler = ExplosionHandler()
 
-    def update(self, player, enemies, powerup_handler):
+    def update(self, player, enemies, powerup_handler, explosion_handler):
         for bullet in self.bullets:
             bullet.update()
 
             if type(bullet) == BulletEnemy:
                 self.check_player_collition(bullet, player)
             elif type(bullet) == BulletPlayer:
-                self.check_enemies_collition(bullet, enemies, powerup_handler)
-
-        self.explosion_handler.update()
+                self.check_enemies_collition(bullet, enemies, powerup_handler, explosion_handler)
+            elif type(bullet) == MisileBullet:
+                self.check_enemies_collition(bullet, enemies, powerup_handler, explosion_handler, bullet_has_explotion = True)
 
     def draw(self, screen):
         for bullet in self.bullets:
             bullet.draw(screen)
-
-        self.explosion_handler.draw(screen)
 
     def check_player_collition(self, bullet, player):
         if pygame.sprite.collide_rect(bullet, player) and not player.is_blinking:
@@ -34,15 +31,19 @@ class BulletHandler:
                 bullet.kill()
 
 
-    def check_enemies_collition(self, bullet, enemies, powerup_handler):
+    def check_enemies_collition(self, bullet, enemies, powerup_handler, explosion_handler, bullet_has_explotion = False):
         enemies_collided = pygame.sprite.spritecollide(bullet, enemies, False)
 
         if len(enemies_collided) > 0:
             bullet.kill()
+
+            if bullet_has_explotion:
+                explosion_handler.add_explosion(MISILE_EXPLOSION, enemies_collided[0].rect.center)
+
             for enemy in enemies_collided:
                 enemy.destroy()
                 powerup_handler.add_powerup(enemy.rect.center)
-                self.explosion_handler.add_explosion(enemy.rect.center)
+                explosion_handler.add_explosion(ENEMY_EXPLOSION, enemy.rect.center)
 
 
     def add_bullet(self, bullet_type, origin):

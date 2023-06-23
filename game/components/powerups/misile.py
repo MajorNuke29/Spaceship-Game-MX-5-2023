@@ -6,7 +6,7 @@ from game.utils.constants import MISILE, MISILE_TYPE
 class Misile(PowerUp):
 
     SIZE = (40, 40)
-    DURATION = 10000
+    DURATION = 5000
 
     def __init__(self, location):
         self.image = pygame.transform.scale(MISILE, self.SIZE)
