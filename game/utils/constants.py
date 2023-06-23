@@ -24,11 +24,34 @@ SPACESHIP = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship.png"))
 SPACESHIP_SHIELD = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship_shield.png"))
 SPACESHIP_WEAPON = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship_weapon.png"))
 BULLET = pygame.image.load(os.path.join(IMG_DIR, "Bullet/bullet_1.png"))
+
 HEART_SPRITES = [pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart.png')),
                  pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart_1.png')),
                  pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart_2.png')),
                  pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart_3.png')),
                  pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart_4.png'))]
+
+EXPLOSION_1_SPRITES = [pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_1/explosion1 (2).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_1/explosion1 (3).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_1/explosion1 (4).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_1/explosion1 (5).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_1/explosion1 (6).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_1/explosion1 (7).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_1/explosion1 (8).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_1/explosion1 (9).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_1/explosion1 (10).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_1/explosion1 (11).png')),]
+
+EXPLOSION_2_SPRITES = [pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_2/explosion2 (2).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_2/explosion2 (3).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_2/explosion2 (4).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_2/explosion2 (5).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_2/explosion2 (6).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_2/explosion2 (7).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_2/explosion2 (8).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_2/explosion2 (9).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_2/explosion2 (10).png')),
+                       pygame.image.load(os.path.join(IMG_DIR, 'Explosions/Explosion_2/explosion2 (11).png')),]
 
 BULLET_ENEMY = pygame.image.load(os.path.join(IMG_DIR, "Bullet/bullet_2.png"))
 ENEMY_1 = pygame.image.load(os.path.join(IMG_DIR, "Enemy/enemy_1.png"))

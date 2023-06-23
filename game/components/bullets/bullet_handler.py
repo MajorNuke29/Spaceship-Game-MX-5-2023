@@ -1,11 +1,13 @@
 import pygame
 
 from game.components.bullets import BulletEnemy, BulletPlayer
+from game.components import ExplosionHandler
 
 class BulletHandler:
     def __init__(self, bullet_factory):
         self.bullets = pygame.sprite.Group()
         self.bullet_factory = bullet_factory
+        self.explosion_handler = ExplosionHandler()
 
     def update(self, player, enemies):
         for bullet in self.bullets:
@@ -16,9 +18,13 @@ class BulletHandler:
             elif type(bullet) == BulletPlayer:
                 self.check_enemies_collition(bullet, enemies)
 
+        self.explosion_handler.update()
+
     def draw(self, screen):
         for bullet in self.bullets:
             bullet.draw(screen)
+
+        self.explosion_handler.draw(screen)
 
     def check_player_collition(self, bullet, player):
         if pygame.sprite.collide_rect(bullet, player) and not player.is_blinking:
@@ -32,6 +38,7 @@ class BulletHandler:
             bullet.kill()
             for enemy in enemies_collided:
                 enemy.destroy()
+                self.explosion_handler.add_explosion(enemy.rect.center)
 
 
     def add_bullet(self, bullet_type, origin):

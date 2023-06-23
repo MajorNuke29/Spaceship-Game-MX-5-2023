@@ -8,6 +8,7 @@ from game.components.bullets.bullet_handler import BulletHandler
 from game.components.enemies.factories import LevelBasedEnemyFactory
 from game.components.bullets import BulletFactory
 from game.components.ui import MenuHandler, PlayerStats
+from game.components.powerups.powerup_handler import PoweUpHandler
 
 
 class Game:
@@ -30,6 +31,7 @@ class Game:
         self.player = SpaceShip()
         self.player_stats = PlayerStats(self.player.lifes)
         self.enemy_handler = None
+        self.power_up_handler = PoweUpHandler()
         self.bullet_handler = BulletHandler(BulletFactory())
         self.menu_handler = MenuHandler()
         self.deaths_count = 0
@@ -83,6 +85,7 @@ class Game:
             user_input = pygame.key.get_pressed()
             self.player.update(user_input)
             self.player_stats.update(self.player.lifes, self.enemy_handler.get_current_score())
+            self.power_up_handler.update(self.player)
             self.enemy_handler.update(self.player)
             self.bullet_handler.update(self.player, self.enemy_handler.get_enemies())
 
@@ -93,6 +96,7 @@ class Game:
         if self.playing:
             self.player.draw(self.screen)
             self.player_stats.draw(self.screen)
+            self.power_up_handler.draw(self.screen)
             self.enemy_handler.draw(self.screen)
             self.bullet_handler.draw(self.screen)
         else:

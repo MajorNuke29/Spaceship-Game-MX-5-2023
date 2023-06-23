@@ -50,7 +50,7 @@ class PlayerStats:
 
         heart_width, heart_height = Heart.HEART_SIZE
         next_x = SCREEN_WIDTH - (heart_width * 3)
-        pos_y =  heart_height 
+        pos_y =  heart_height * 1.5
 
         for _ in range(lifes):
             hearts.append(Heart((next_x, pos_y)))
