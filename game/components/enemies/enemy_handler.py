@@ -29,10 +29,12 @@ class EnemyHandler:
 
         for enemy in pygame.sprite.spritecollide(player, self.enemies, False):
             if not player.is_blinking:
-                player.start_blink()
-                player.reduce_lifes()
-                enemy.kill()
-                self.enemy_factory.reduce_instance_count()
+                if not player.is_invincible:
+                    player.start_blink()
+                    player.reduce_lifes()
+                else:
+                    enemy.kill()
+                    self.enemy_factory.reduce_instance_count()
 
     def draw(self, screen):
         self.enemies.draw(screen)

@@ -9,14 +9,14 @@ class BulletHandler:
         self.bullet_factory = bullet_factory
         self.explosion_handler = ExplosionHandler()
 
-    def update(self, player, enemies):
+    def update(self, player, enemies, powerup_handler):
         for bullet in self.bullets:
             bullet.update()
 
             if type(bullet) == BulletEnemy:
                 self.check_player_collition(bullet, player)
             elif type(bullet) == BulletPlayer:
-                self.check_enemies_collition(bullet, enemies)
+                self.check_enemies_collition(bullet, enemies, powerup_handler)
 
         self.explosion_handler.update()
 
@@ -28,16 +28,20 @@ class BulletHandler:
 
     def check_player_collition(self, bullet, player):
         if pygame.sprite.collide_rect(bullet, player) and not player.is_blinking:
-            player.start_blink()
-            player.reduce_lifes()
+            if not player.is_invincible:
+                player.start_blink()
+                player.reduce_lifes()
+                bullet.kill()
 
-    def check_enemies_collition(self, bullet, enemies):
+
+    def check_enemies_collition(self, bullet, enemies, powerup_handler):
         enemies_collided = pygame.sprite.spritecollide(bullet, enemies, False)
 
         if len(enemies_collided) > 0:
             bullet.kill()
             for enemy in enemies_collided:
                 enemy.destroy()
+                powerup_handler.add_powerup(enemy.rect.center)
                 self.explosion_handler.add_explosion(enemy.rect.center)
 
 

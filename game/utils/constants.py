@@ -19,11 +19,13 @@ HEART = pygame.image.load(os.path.join(IMG_DIR, 'Other/SmallHeart.png'))
 
 DEFAULT_TYPE = "default"
 SHIELD_TYPE = 'shield'
+MISILE_TYPE = 'misile'
+HEART_TYPE = 'heart'
 
 SPACESHIP = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship.png"))
 SPACESHIP_SHIELD = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship_shield.png"))
 SPACESHIP_WEAPON = pygame.image.load(os.path.join(IMG_DIR, "Spaceship/spaceship_weapon.png"))
-BULLET = pygame.image.load(os.path.join(IMG_DIR, "Bullet/bullet_1.png"))
+MISILE = pygame.image.load(os.path.join(IMG_DIR, "Bullet/bullet_1.png"))
 
 HEART_SPRITES = [pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart.png')),
                  pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart/Heart_1.png')),
@@ -95,11 +97,13 @@ BULLET_ENEMY_TYPE = 'enemy'
 BULLET_PLAYER_TYPE = 'player'
 BULLET_PLAYER_SPEED = 15
 
+# Drop constants
+EASY_LEVEL_DROPS = [1,1,0,2]
+MEDIUM_LEVEL_DROPS = [1,1,1,3]
+HARD_LEVEL_DROPS = [0,1,1,3]
+
 # Custom events
 SPAWN_ENEMY = pygame.USEREVENT + 1
-# ENEMY_SHIP_SHOOT = pygame.USEREVENT + 2
-# ENEMY_DRONE_SHOOT = pygame.USEREVENT + 3
-# ENEMY_FOLLOWER_SHOOT = pygame.USEREVENT + 4
 ENEMY_SHOOT = pygame.USEREVENT + 5
 
 MENU_EXIT = 'exit'

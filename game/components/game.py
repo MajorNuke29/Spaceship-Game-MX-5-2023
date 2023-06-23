@@ -1,6 +1,6 @@
 import pygame
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES, HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES, MENU_TRY_AGAIN, MENU_EXIT, MENU_CHANGE_DIFICULTY, MENU_OPTION_EASY, MENU_OPTION_MEDIUM, MENU_OPTION_HARD, EASY_LEVEL_LIFES, MEDIUM_LEVEL_LIFES, HARD_LEVEL_LIFES
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SPAWN_ENEMY, ENEMY_SHOOT, EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES, MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES, HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES, MENU_TRY_AGAIN, MENU_EXIT, MENU_CHANGE_DIFICULTY, MENU_OPTION_EASY, MENU_OPTION_MEDIUM, MENU_OPTION_HARD, EASY_LEVEL_LIFES, MEDIUM_LEVEL_LIFES, HARD_LEVEL_LIFES, EASY_LEVEL_DROPS, MEDIUM_LEVEL_DROPS, HARD_LEVEL_DROPS
 
 from game.components.spaceship import SpaceShip
 from game.components.enemies.enemy_handler import EnemyHandler
@@ -8,7 +8,7 @@ from game.components.bullets.bullet_handler import BulletHandler
 from game.components.enemies.factories import LevelBasedEnemyFactory
 from game.components.bullets import BulletFactory
 from game.components.ui import MenuHandler, PlayerStats
-from game.components.powerups.powerup_handler import PoweUpHandler
+from game.components.powerups import PoweUpHandler, PowerupFactory
 
 
 class Game:
@@ -31,7 +31,7 @@ class Game:
         self.player = SpaceShip()
         self.player_stats = PlayerStats(self.player.lifes)
         self.enemy_handler = None
-        self.power_up_handler = PoweUpHandler()
+        self.power_up_handler = None
         self.bullet_handler = BulletHandler(BulletFactory())
         self.menu_handler = MenuHandler()
         self.deaths_count = 0
@@ -87,7 +87,7 @@ class Game:
             self.player_stats.update(self.player.lifes, self.enemy_handler.get_current_score())
             self.power_up_handler.update(self.player)
             self.enemy_handler.update(self.player)
-            self.bullet_handler.update(self.player, self.enemy_handler.get_enemies())
+            self.bullet_handler.update(self.player, self.enemy_handler.get_enemies(), self.power_up_handler)
 
     def draw(self):
         self.clock.tick(FPS)
@@ -121,16 +121,19 @@ class Game:
 
         if action == MENU_OPTION_EASY:
             self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(EASY_LEVEL_ENEMY_SPAWNS, EASY_LEVEL_MAX_ENEMIES))
+            self.power_up_handler = PoweUpHandler(PowerupFactory(EASY_LEVEL_DROPS))
             self.player.set_lifes(EASY_LEVEL_LIFES)
             self.player_stats.set_lifes(EASY_LEVEL_LIFES)
             self.playing = True
         elif action == MENU_OPTION_MEDIUM:
             self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(MEDIUM_LEVEL_ENEMY_SPAWNS, MEDIUM_LEVEL_MAX_ENEMIES))
+            self.power_up_handler = PoweUpHandler(PowerupFactory(MEDIUM_LEVEL_DROPS))
             self.player.set_lifes(MEDIUM_LEVEL_LIFES)
             self.player_stats.set_lifes(MEDIUM_LEVEL_LIFES)
             self.playing = True
         elif action == MENU_OPTION_HARD:
             self.enemy_handler = EnemyHandler(LevelBasedEnemyFactory(HARD_LEVEL_ENEMY_SPAWNS, HARD_LEVEL_MAX_ENEMIES))
+            self.power_up_handler = PoweUpHandler(PowerupFactory(HARD_LEVEL_DROPS))
             self.player.set_lifes(HARD_LEVEL_LIFES)
             self.player_stats.set_lifes(HARD_LEVEL_LIFES)
             self.playing = True
@@ -149,4 +152,5 @@ class Game:
         self.player_stats.reset()
         self.enemy_handler.reset()
         self.bullet_handler.reset()
+        self.power_up_handler.reset()
         self.menu_handler.reset()

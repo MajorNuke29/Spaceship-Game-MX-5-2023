@@ -1,27 +1,27 @@
-import pygame, random
+import pygame
 
-from game.utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from game.utils.constants import SCREEN_HEIGHT
 
 class PowerUp:
 
-    SIZE = (30, 30)
-    POS_Y = 0
     SPEED = 10
-    DURATION = 5000
 
-    def __init__(self, image):
+    def __init__(self, image, size, location, duration, type):
+        self.location = location
+        self.size = size
+        self.duration = duration
+        self.type = type
         self.image = image
-        self.image = pygame.transform.scale(self.image, self.SIZE)
         self.rect = self.image.get_rect()
-        self.rect.x = random.randint(120, SCREEN_WIDTH - 120)
+        self.rect.center = location
+        self.is_active = True
         self.is_alive = True
 
-    def update(self, player):
+    def update(self):
         self.rect.y += self.SPEED
         
-        if self.rect.y >= SCREEN_HEIGHT or self.rect.colliderect(player.rect):
+        if self.rect.y >= SCREEN_HEIGHT:
             self.is_alive = False
-
 
     def draw (self, screen):
         screen.blit(self.image, self.rect)

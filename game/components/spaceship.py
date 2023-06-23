@@ -1,6 +1,6 @@
 import pygame
 
-from game.utils.constants import SPACESHIP, SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BULLET_PLAYER_TYPE
+from game.utils.constants import SPACESHIP, SPACESHIP_SHIELD, SHIELD_TYPE, MISILE_TYPE, HEART_TYPE, SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BULLET_PLAYER_TYPE
 from game.components.weapon import Weapon
 
 class SpaceShip:
@@ -9,10 +9,13 @@ class SpaceShip:
     HEIGTH = 60
     X_POS = (SCREEN_WIDTH // 2)
     Y_POS = SCREEN_HEIGHT // 2
+
     BLINK_DURATION_SECS = 2
     BLINK_DURATION_CYCLES = BLINK_DURATION_SECS * FPS
+
     DELAY_DURATION_SECS = 0.3
     DELAY_DURATION_CYCLES = DELAY_DURATION_SECS * FPS
+    
     ALPHA_INTERVAL = (255 // (FPS // 2))
     SPEED = 12
 
@@ -23,14 +26,62 @@ class SpaceShip:
         self.rect.centerx = self.X_POS
         self.rect.centery = self.Y_POS
         self.weapon = Weapon(self, self.HEIGTH)
+        self.bullet = BULLET_PLAYER_TYPE
+
         self.is_alive = True
         self.lifes = lifes
+        self.default_lifes = lifes
         self.is_blinking = False
         self.is_visible = True
         self.can_shoot = True
+        self.is_invincible = False
+        self.powerup = None
+        
+        self.powerup_start = 0
+        self.powerup_end = 0
         self.blink_cycles = self.BLINK_DURATION_CYCLES
         self.shoot_delay_cycles = self.DELAY_DURATION_CYCLES
         self.alpha_value = 255
+
+
+    def add_powerup(self, powerup):
+        if powerup.type == SHIELD_TYPE:
+            self.change_image(SPACESHIP_SHIELD, (self.WIDTH + 25, self.HEIGTH + 15))
+            self.is_invincible =True
+
+        elif powerup.type == MISILE_TYPE:
+            pass
+
+        elif powerup.type == HEART_TYPE:
+            if self.lifes < self.default_lifes:
+                self.lifes += 1
+            print(self.lifes)
+
+        self.powerup = powerup
+        self.powerup_start = pygame.time.get_ticks()
+        self.powerup_end = self.powerup_start + powerup.duration
+
+    def has_powerup(self):
+        return self.powerup != None
+
+    def remove_powerup(self):
+        if self.powerup.type == SHIELD_TYPE:
+            self.change_image(SPACESHIP, (self.WIDTH, self.HEIGTH))
+            self.is_invincible = False
+
+        elif self.powerup.type == MISILE_TYPE:
+            pass
+
+        self.powerup = None
+        self.powerup_start = 0
+        self.powerup_end = 0
+
+    def change_image(self, image, size):
+        self.image = pygame.transform.scale(image, size)
+        new_rect = self.image.get_rect()
+        new_rect.x, new_rect.y = self.rect.x, self.rect.y
+        self.rect = new_rect
+
 
     def update(self, user_input):
         self.move(user_input)
@@ -41,11 +92,19 @@ class SpaceShip:
         if self.is_blinking:
             self.__blink()
 
+        if pygame.time.get_ticks() >= self.powerup_end and self.powerup_end != 0:
+            self.remove_powerup()
+
         if self.lifes <= 0:
             self.kill()
 
+
+
     def set_lifes(self, lifes):
         self.lifes = lifes
+        self.default_lifes = lifes
+
+
 
     def __shoot_delay(self):
         if self.shoot_delay_cycles < self.DELAY_DURATION_CYCLES:
@@ -57,23 +116,20 @@ class SpaceShip:
         self.can_shoot = False
         self.shoot_delay_cycles = 0
 
+
+
     def draw(self, screen):
         screen.blit(self.image, self.rect)
         self.weapon.draw(screen)
 
-        # mouse_x, mouse_y = pygame.mouse.get_pos()
-        # vector_mouse = pygame.math.Vector2((mouse_x - self.rect.centerx), (mouse_y - self.rect.centery))
-        # len_line = 80
-
-        # vector_mouse.scale_to_length(len_line)
-
-        # pygame.draw.line(screen, (255, 45, 16), self.rect.center, (self.rect.centerx + vector_mouse.x, self.rect.centery + vector_mouse.y), 3)
 
     def kill(self):
         self.is_alive = False
 
     def reduce_lifes(self):
         self.lifes -= 1
+
+
 
     def __blink(self):
         if self.blink_cycles < self.BLINK_DURATION_CYCLES:
@@ -102,10 +158,14 @@ class SpaceShip:
         self.is_blinking = True
         self.blink_cycles = 0
 
+
+
+
     def shoot(self, bullet_handler):
         if self.can_shoot:
             bullet_handler.add_bullet(BULLET_PLAYER_TYPE, self.weapon.rect.center)
             self.__start_shooting_delay()
+
 
 
 
@@ -140,7 +200,7 @@ class SpaceShip:
 
     def reset(self):
         self.is_alive = True
-        self.lifes = 3
+        self.lifes = self.default_lifes
         self.is_blinking = False
         self.is_visible = True
         self.blink_cycles = self.BLINK_DURATION_CYCLES

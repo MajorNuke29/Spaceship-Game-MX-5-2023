@@ -2,7 +2,7 @@ import pygame
 
 from game.utils.constants import SPACESHIP_WEAPON
 
-class Weapon(pygame.sprite.Sprite):
+class Weapon:
 
     WIDTH = 15
     HEIGHT = 15

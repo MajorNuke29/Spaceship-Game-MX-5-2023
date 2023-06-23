@@ -1,19 +1,19 @@
 import pygame
 
 from game.components.bullets import Bullet
-from game.utils.constants import BULLET, BULLET_PLAYER_SPEED, SCREEN_WIDTH, SCREEN_HEIGHT
+from game.utils.constants import BULLET_ENEMY, SCREEN_WIDTH, SCREEN_HEIGHT
 
 class BulletPlayer(Bullet):
 
-    WIDTH = 20
-    HEIGHT = 40
+    WIDTH = 10
+    HEIGHT = 25
     SPEED = 17
 
     def __init__(self, origin):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.dir_vect = pygame.math.Vector2((mouse_x - origin[0]), (mouse_y - origin[1]))
         self.dir_vect.scale_to_length(self.SPEED)
-        self.image = BULLET
+        self.image = BULLET_ENEMY
         self.image = pygame.transform.scale(self.image, (self.WIDTH, self.HEIGHT))
         self.image = pygame.transform.rotate(self.image, self.__get_rotation_angle(origin))
         self.rect = self.image.get_rect()

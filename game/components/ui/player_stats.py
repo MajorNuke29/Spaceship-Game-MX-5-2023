@@ -9,6 +9,7 @@ class PlayerStats:
     def __init__(self, lifes):
         self.life_sprites, self.is_life_active = self.__gen_heart_sprites(lifes)
         self.len_lifes = len(self.life_sprites)
+        self.active_lifes_count = self.len_lifes
         self.score, self.score_rect = self.__gen_score_sprite(0)
 
     def update (self, lifes, score):
@@ -17,6 +18,13 @@ class PlayerStats:
         if index >= 0 and self.is_life_active[index]:
             self.life_sprites[index].start_animation()
             self.is_life_active[index] = False
+            self.active_lifes_count -= 1
+
+        if self.active_lifes_count < lifes:
+            sprite = self.life_sprites[index+1]
+            sprite.reset()
+            self.is_life_active[index+1] = True
+            self.active_lifes_count = lifes
 
         for life in self.life_sprites:
             life.update()
@@ -38,11 +46,13 @@ class PlayerStats:
         for life in self.life_sprites:
             life.reset()
 
+        self.active_lifes_count = self.len_lifes
+        self.is_life_active = [True for _ in self.life_sprites]
         self.score, self.score_rect = self.__gen_score_sprite(0)
 
     def __gen_score_sprite(self, score):
         score_text = "SCORE: " + str(score)
-        return txt.get_text_surface(score_text, FONT_SIZE, WHITE_COLOR, (20, 20))
+        return txt.get_text_surface(score_text, FONT_SIZE, WHITE_COLOR, (30, 30))
 
     def __gen_heart_sprites(self, lifes):
         hearts = []
