@@ -72,6 +72,9 @@ class Game:
 
     def update(self):
         if self.playing:
+            user_input = pygame.key.get_pressed()
+            self.player.update(user_input)
+
             if not self.player.is_alive:
                 self.playing = False
                 self.deaths_count += 1
@@ -83,8 +86,6 @@ class Game:
 
                 self.menu_handler.update(self.score, self.max_score, self.destroyed_enemies, self.deaths_count)
 
-            user_input = pygame.key.get_pressed()
-            self.player.update(user_input)
             self.player_stats.update(self.player.lifes, self.enemy_handler.get_current_score())
             self.power_up_handler.update(self.player)
             self.enemy_handler.update(self.player)

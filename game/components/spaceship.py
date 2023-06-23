@@ -45,26 +45,28 @@ class SpaceShip:
 
 
     def add_powerup(self, powerup):
-        if powerup.type == SHIELD_TYPE:
-            self.change_image(SPACESHIP_SHIELD, (self.WIDTH + 25, self.HEIGTH + 15))
-            self.is_invincible =True
+        if not self.has_powerup():
+            if powerup.type == SHIELD_TYPE:
+                self.change_image(SPACESHIP_SHIELD, (self.WIDTH + 25, self.HEIGTH + 15))
+                self.is_invincible =True
 
-        elif powerup.type == MISILE_TYPE:
-            self.bullet = BULLET_MISILE_TYPE
+            elif powerup.type == MISILE_TYPE:
+                self.bullet = BULLET_MISILE_TYPE
 
-        elif powerup.type == HEART_TYPE:
+            self.powerup = powerup
+            self.powerup_start = pygame.time.get_ticks()
+            self.powerup_end = self.powerup_start + powerup.duration
+
+        if powerup.type == HEART_TYPE:
             if self.lifes < self.default_lifes:
                 self.lifes += 1
-            print(self.lifes)
 
-        self.powerup = powerup
-        self.powerup_start = pygame.time.get_ticks()
-        self.powerup_end = self.powerup_start + powerup.duration
 
     def has_powerup(self):
         return self.powerup != None
 
     def remove_powerup(self):
+        print("remove powerp")
         if self.powerup.type == SHIELD_TYPE:
             self.change_image(SPACESHIP, (self.WIDTH, self.HEIGTH))
             self.is_invincible = False
@@ -173,14 +175,15 @@ class SpaceShip:
         if user_input[pygame.K_LEFT] or user_input[pygame.K_a]:
             self.move_left()
 
-        elif user_input[pygame.K_RIGHT] or user_input[pygame.K_d]:
+        if user_input[pygame.K_RIGHT] or user_input[pygame.K_d]:
             self.move_right()
 
-        elif user_input[pygame.K_UP] or user_input[pygame.K_w]:
+        if user_input[pygame.K_UP] or user_input[pygame.K_w]:
             self.move_up()
 
-        elif user_input[pygame.K_DOWN] or user_input[pygame.K_s]:
+        if user_input[pygame.K_DOWN] or user_input[pygame.K_s]:
             self.move_down()
+
 
     def move_left(self):
         if self.rect.left > 0:
@@ -203,6 +206,12 @@ class SpaceShip:
         self.lifes = self.default_lifes
         self.is_blinking = False
         self.is_visible = True
+        self.powerup == None
+        self.powerup_start = 0
+        self.powerup_end = 0
+        self.bullet = BULLET_PLAYER_TYPE
+        self.can_shoot = True
+        self.is_invincible = False
         self.blink_cycles = self.BLINK_DURATION_CYCLES
         self.alpha_value = 255
         self.rect.x = self.X_POS

@@ -1,3 +1,5 @@
+from game.utils.constants import HEART_TYPE
+
 class PoweUpHandler:
 
     def __init__(self, powerup_factory):
@@ -7,10 +9,10 @@ class PoweUpHandler:
     def update(self, player):
         for powerup in self.powerups:
             if powerup.rect.colliderect(player.rect):
-                if not player.has_powerup():
-                    player.add_powerup(powerup)
-                
-                powerup.is_alive = False
+                if not player.has_powerup() or powerup.type == HEART_TYPE:
+                    powerup.is_alive = False
+
+                player.add_powerup(powerup)
 
             if not powerup.is_alive:
                 self.remove_powerup(powerup)

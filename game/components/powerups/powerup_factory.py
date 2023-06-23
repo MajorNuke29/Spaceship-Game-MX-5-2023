@@ -1,11 +1,9 @@
 import random
 
-from game.utils.constants import SHIELD_TYPE, HEART_TYPE, MISILE_TYPE
+from game.utils.constants import SHIELD_TYPE, HEART_TYPE, MISILE_TYPE, POWERUPS_DROPS
 from game.components.powerups import Shield, Misile, HealUp
 
 class PowerupFactory:
-
-    POWERUPS = [SHIELD_TYPE, MISILE_TYPE, HEART_TYPE, None]
 
     def __init__(self, drop_probabilities):
         self.drop_probabilities = drop_probabilities
@@ -23,5 +21,5 @@ class PowerupFactory:
         return powerup
 
     def get_powerup(self, location):
-        type = random.choices(self.POWERUPS, weights=self.drop_probabilities, k=1)[0]
+        type = random.choices(POWERUPS_DROPS, weights=self.drop_probabilities, k=1)[0]
         return self.__instantite_powerup(type, location)
